@@ -233,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
         if (lastCheckinTime != null && lastCheckinTime.length() >= 10) {
             lastCheckinDate = lastCheckinTime.substring(0, 10);
             
-            // Check for Overdue
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 Date checkinDate = sdf.parse(lastCheckinTime);
@@ -242,38 +241,31 @@ public class MainActivity extends AppCompatActivity {
                 long diff = now.getTime() - checkinDate.getTime();
                 long goldenHoursInMillis = (long) (currentUser.goldenHours != null ? currentUser.goldenHours : 24) * 60 * 60 * 1000;
                 
+                tvLastCheckin.setText(getString(R.string.prefix_last_checkin) + lastCheckinTime);
+                
                 if (diff > goldenHoursInMillis) {
                     // Overdue!
-                    tvLastCheckin.setTextColor(0xFFFF5722); // Deep Orange
-                    // btnCheckin.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFFF9800)); // Orange
-                    // Force background resource to be re-applied or tinting might override it incorrectly
-                    // Actually backgroundTint applies to the background drawable. 
-                    // Since we used a custom drawable, setting backgroundTint will tint the WHOLE drawable.
-                    // This is fine for the "Overdue" state to make it orange.
-                    
-                    btnCheckin.setText(getString(R.string.btn_im_still_ok));
+                    tvStatus.setTextColor(0xFFFF5722); // Deep Orange / Red
                     tvStatus.setText(getString(R.string.status_overdue));
-                    btnCheckin.setEnabled(true);
-                    
-                    tvLastCheckin.setText(getString(R.string.prefix_last_checkin) + lastCheckinTime);
-                    return; // Exit early as we have set the overdue state
+                } else {
+                    // Safe / Checked In
+                    tvStatus.setTextColor(getResources().getColor(android.R.color.black)); // Or Green/Default
+                    tvStatus.setText(getString(R.string.status_checked_in));
                 }
+                
+                // Button is always enabled and shows "I'm OK"
+                btnCheckin.setEnabled(true);
+                btnCheckin.setText(getString(R.string.btn_im_ok));
+                
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        tvLastCheckin.setText(getString(R.string.prefix_last_checkin) + (lastCheckinTime == null ? getString(R.string.text_never) : lastCheckinTime));
-
-        if (today.equals(lastCheckinDate)) {
-            tvStatus.setText(getString(R.string.status_checked_in));
-            btnCheckin.setEnabled(false);
-            btnCheckin.setText(getString(R.string.btn_done));
-            // When done, maybe grey out? 
-            // Default backgroundTint is #4CAF50 (Green) from reset styles.
-            // If disabled, system usually handles greying out, but we can be explicit if needed.
         } else {
-            tvStatus.setText(getString(R.string.status_waiting));
+            // Never checked in
+            tvLastCheckin.setText(getString(R.string.prefix_last_checkin) + getString(R.string.text_never));
+            tvStatus.setTextColor(0xFFFF5722); // Red
+            tvStatus.setText(getString(R.string.status_overdue)); // Or "Not checked in yet"
+            
             btnCheckin.setEnabled(true);
             btnCheckin.setText(getString(R.string.btn_im_ok));
         }
