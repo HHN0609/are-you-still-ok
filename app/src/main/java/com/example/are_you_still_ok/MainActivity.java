@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout registerLayout;
     private LinearLayout mainLayout;
+    private LinearLayout loadingLayout;
 
     private EditText etUsername;
     private EditText etPhone;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Init Views
+        loadingLayout = findViewById(R.id.loading_layout);
         registerLayout = findViewById(R.id.register_layout);
         mainLayout = findViewById(R.id.main_layout);
         etUsername = findViewById(R.id.et_username);
@@ -182,11 +184,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRegisterUI() {
+        if (loadingLayout != null) loadingLayout.setVisibility(View.GONE);
         registerLayout.setVisibility(View.VISIBLE);
         mainLayout.setVisibility(View.GONE);
     }
 
     private void showMainUI() {
+        if (loadingLayout != null) loadingLayout.setVisibility(View.GONE);
         registerLayout.setVisibility(View.GONE);
         mainLayout.setVisibility(View.VISIBLE);
 
@@ -211,10 +215,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                // In a real app, we might show a "Retry" button. 
-                // Here we just stay on whatever screen, but since we haven't shown MainUI yet, 
-                // it might look empty. Let's show Register UI as fallback or a loading state.
-                // For simplicity, let's keep it simple.
+                // Fallback to register UI so user isn't stuck on loading
+                showRegisterUI();
             }
         });
     }
