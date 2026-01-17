@@ -11,7 +11,7 @@
     <string name="btn_im_ok">我还活着</string>
     <string name="btn_done">已打卡</string>
     <string name="status_waiting">状态: 等待打卡</string>
-    <string name="status_checked_in">状态: 今日已打卡</string>
+    <string name="status_checked_in">状态: 已打卡</string>
     <string name="prefix_last_checkin">上次打卡: </string>
     <string name="text_never">从未</string>
     <string name="btn_edit_profile">修改资料</string>

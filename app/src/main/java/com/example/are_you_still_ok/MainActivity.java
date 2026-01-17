@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                     tvStatus.setText(getString(R.string.status_overdue));
                 } else {
                     // Safe / Checked In
-                    tvStatus.setTextColor(getResources().getColor(android.R.color.black)); // Or Green/Default
+                    tvStatus.setTextColor(getResources().getColor(R.color.green_700)); // Or Green/Default
                     tvStatus.setText(getString(R.string.status_checked_in));
                 }
                 

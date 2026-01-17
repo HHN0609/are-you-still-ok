@@ -11,7 +11,7 @@
     <string name="btn_im_ok">I\'M OK</string>
     <string name="btn_done">Done</string>
     <string name="status_waiting">Status: Waiting for check-in</string>
-    <string name="status_checked_in">Status: Checked In Today</string>
+    <string name="status_checked_in">Status: Checked In</string>
     <string name="prefix_last_checkin">Last check-in: </string>
     <string name="text_never">Never</string>
     <string name="btn_edit_profile">Edit Profile</string>
