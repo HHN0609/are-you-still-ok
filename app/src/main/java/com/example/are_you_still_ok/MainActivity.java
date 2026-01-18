@@ -294,11 +294,16 @@ public class MainActivity extends AppCompatActivity {
         RetrofitClient.getInstance().getUser(userId).enqueue(new Callback<ApiResponse<User>>() {
             @Override
             public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().code == 200) {
-                    currentUser = response.body().data;
+                ApiResponse<User> body = response.body();
+                if (response.isSuccessful() && body != null && body.code == 200) {
+                    currentUser = body.data;
                     showMainUI();
                 } else {
-                    Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    if (body != null && body.code == 400 && body.message != null && !body.message.isEmpty()) {
+                        Toast.makeText(MainActivity.this, body.message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    }
                     showRegisterUI();
                 }
             }
@@ -403,13 +408,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                 btnStart.setEnabled(true);
-                if (response.isSuccessful() && response.body() != null && response.body().code == 200) {
-                    User user = response.body().data;
+                ApiResponse<User> body = response.body();
+                if (response.isSuccessful() && body != null && body.code == 200) {
+                    User user = body.data;
                     saveUser(user);
                     showMainUI();
                     Toast.makeText(MainActivity.this, String.format(getString(R.string.msg_welcome), user.username), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    if (body != null && body.code == 400 && body.message != null && !body.message.isEmpty()) {
+                        Toast.makeText(MainActivity.this, body.message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -430,8 +440,9 @@ public class MainActivity extends AppCompatActivity {
         RetrofitClient.getInstance().checkIn(userId).enqueue(new Callback<ApiResponse<CheckinResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<CheckinResponse>> call, Response<ApiResponse<CheckinResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().code == 200) {
-                    String checkinTime = response.body().data.checkinTime;
+                ApiResponse<CheckinResponse> body = response.body();
+                if (response.isSuccessful() && body != null && body.code == 200) {
+                    String checkinTime = body.data.checkinTime;
                     if (currentUser != null) {
                         currentUser.lastCheckinTime = checkinTime;
                     }
@@ -439,7 +450,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, getString(R.string.msg_checkin_success), Toast.LENGTH_SHORT).show();
                 } else {
                     btnCheckin.setEnabled(true);
-                    Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    if (body != null && body.code == 400 && body.message != null && !body.message.isEmpty()) {
+                        Toast.makeText(MainActivity.this, body.message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -523,11 +538,16 @@ public class MainActivity extends AppCompatActivity {
         RetrofitClient.getInstance().updateUser(userId, request).enqueue(new Callback<ApiResponse<User>>() {
             @Override
             public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().code == 200) {
+                ApiResponse<User> body = response.body();
+                if (response.isSuccessful() && body != null && body.code == 200) {
                     fetchUserInfo(userId);
                     Toast.makeText(MainActivity.this, getString(R.string.msg_profile_updated), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    if (body != null && body.code == 400 && body.message != null && !body.message.isEmpty()) {
+                        Toast.makeText(MainActivity.this, body.message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, getString(R.string.msg_network_error), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
